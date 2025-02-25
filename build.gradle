@@ -1,0 +1,57 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.9'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    flowableVersion = '6.8.0'
+}
+
+dependencies {
+    // Spring Boot
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+    // Flowable
+    implementation "org.flowable:flowable-spring-boot-starter:${flowableVersion}"
+    implementation "org.flowable:flowable-spring-boot-starter-rest:${flowableVersion}"
+    implementation "org.flowable:flowable-dmn-engine:${flowableVersion}"
+    implementation "org.flowable:flowable-dmn-spring:${flowableVersion}"
+    implementation "org.flowable:flowable-dmn-rest:${flowableVersion}"
+    implementation "org.flowable:flowable-cmmn-engine:${flowableVersion}"
+    implementation "org.flowable:flowable-cmmn-spring:${flowableVersion}"
+    implementation "org.flowable:flowable-cmmn-rest:${flowableVersion}"
+    implementation "org.flowable:flowable-form-engine:${flowableVersion}"
+    implementation "org.flowable:flowable-form-spring:${flowableVersion}"
+    implementation "org.flowable:flowable-form-rest:${flowableVersion}"
+    
+    // Database
+    runtimeOnly 'com.h2database:h2'
+    
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
