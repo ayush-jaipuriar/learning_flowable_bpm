@@ -34,7 +34,7 @@ public class LoanApplicationService {
         // Save the loan application to get an ID
         LoanApplication savedApplication = loanApplicationRepository.save(loanApplication);
         
-        // Start the loan application process
+        // Prepare variables for the process
         Map<String, Object> variables = new HashMap<>();
         variables.put("loanApplicationId", savedApplication.getId());
         variables.put("applicantName", savedApplication.getApplicantName());
@@ -43,11 +43,15 @@ public class LoanApplicationService {
         variables.put("monthlyIncome", savedApplication.getMonthlyIncome());
         variables.put("existingDebt", savedApplication.getExistingDebt());
         
+        // Start the loan application process
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("loanApplicationProcess", variables);
         
         // Update the loan application with the process instance ID
         savedApplication.setProcessInstanceId(processInstance.getId());
         savedApplication = loanApplicationRepository.save(savedApplication);
+        
+        // Force a flush to ensure the entity is saved before the process continues
+        loanApplicationRepository.flush();
         
         log.info("Started loan application process with ID: {} for applicant: {}", 
                 processInstance.getId(), savedApplication.getApplicantName());

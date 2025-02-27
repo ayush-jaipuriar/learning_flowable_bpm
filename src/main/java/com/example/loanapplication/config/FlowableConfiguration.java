@@ -20,11 +20,23 @@ public class FlowableConfiguration {
         configuration.setEnableProcessDefinitionInfoCache(true);
         
         // Load BPMN process definitions
-        Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+        Resource[] processResources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
                 .getResources("classpath*:processes/*.bpmn20.xml");
         
-        if (resources != null && resources.length > 0) {
-            configuration.setDeploymentResources(resources);
+        if (processResources != null && processResources.length > 0) {
+            configuration.setDeploymentResources(processResources);
+        }
+        
+        // Load DMN decision tables
+        Resource[] dmnResources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
+                .getResources("classpath*:dmn/*.dmn");
+        
+        if (dmnResources != null && dmnResources.length > 0) {
+            // Add DMN resources to deployment resources
+            Resource[] allResources = new Resource[processResources.length + dmnResources.length];
+            System.arraycopy(processResources, 0, allResources, 0, processResources.length);
+            System.arraycopy(dmnResources, 0, allResources, processResources.length, dmnResources.length);
+            configuration.setDeploymentResources(allResources);
         }
         
         return configuration;

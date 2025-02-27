@@ -27,6 +27,21 @@ public class RejectLoanApplicationDelegate implements JavaDelegate {
         // Retrieve loan application from database
         LoanApplication loanApplication = loanApplicationRepository.findByProcessInstanceId(processInstanceId);
         
+        // If not found by process instance ID, try to find by loan application ID from variables
+        if (loanApplication == null && execution.hasVariable("loanApplicationId")) {
+            Long loanApplicationId = (Long) execution.getVariable("loanApplicationId");
+            log.info("Loan application not found by process instance ID, trying with loan application ID: {}", loanApplicationId);
+            loanApplication = loanApplicationRepository.findById(loanApplicationId)
+                    .orElse(null);
+            
+            // If found, update the process instance ID
+            if (loanApplication != null) {
+                loanApplication.setProcessInstanceId(processInstanceId);
+                loanApplicationRepository.save(loanApplication);
+                log.info("Updated loan application with process instance ID");
+            }
+        }
+        
         if (loanApplication == null) {
             throw new RuntimeException("Loan application not found for process instance ID: " + processInstanceId);
         }

@@ -18,10 +18,10 @@
 
         <sequenceFlow id="flow2" sourceRef="checkCreditScore" targetRef="evaluateLoanEligibility" />
 
-        <businessRuleTask id="evaluateLoanEligibility" name="Evaluate Loan Eligibility"
-                         flowable:decisionTableReferenceKey="loanEligibility">
+        <serviceTask id="evaluateLoanEligibility" name="Evaluate Loan Eligibility"
+                     flowable:delegateExpression="${evaluateLoanEligibilityDelegate}">
             <documentation>Determine if applicant is eligible for loan based on credit score and income</documentation>
-        </businessRuleTask>
+        </serviceTask>
 
         <sequenceFlow id="flow3" sourceRef="evaluateLoanEligibility" targetRef="eligibilityGateway" />
 
@@ -35,10 +35,10 @@
             <conditionExpression xsi:type="tFormalExpression">${eligible == false}</conditionExpression>
         </sequenceFlow>
 
-        <businessRuleTask id="calculateInterestRate" name="Calculate Interest Rate"
-                         flowable:decisionTableReferenceKey="loanInterestRate">
+        <serviceTask id="calculateInterestRate" name="Calculate Interest Rate"
+                     flowable:delegateExpression="${calculateInterestRateDelegate}">
             <documentation>Calculate interest rate based on loan amount and risk profile</documentation>
-        </businessRuleTask>
+        </serviceTask>
 
         <sequenceFlow id="flow6" sourceRef="calculateInterestRate" targetRef="manualApproval" />
 
