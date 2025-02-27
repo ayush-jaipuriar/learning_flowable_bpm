@@ -2,21 +2,26 @@ package com.example.loanapplication.delegate;
 
 import com.example.loanapplication.model.LoanApplication;
 import com.example.loanapplication.repository.LoanApplicationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class CheckCreditScoreDelegate implements JavaDelegate {
 
-    private final LoanApplicationRepository loanApplicationRepository;
+    @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
+    
     private final Random random = new Random();
+    
+    // Default no-args constructor for Flowable
+    public CheckCreditScoreDelegate() {
+    }
 
     @Override
     public void execute(DelegateExecution execution) {

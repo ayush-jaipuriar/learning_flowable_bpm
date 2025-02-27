@@ -2,20 +2,24 @@ package com.example.loanapplication.delegate;
 
 import com.example.loanapplication.model.LoanApplication;
 import com.example.loanapplication.repository.LoanApplicationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class DisburseLoanDelegate implements JavaDelegate {
 
-    private final LoanApplicationRepository loanApplicationRepository;
+    @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
+    
+    // Default no-args constructor for Flowable
+    public DisburseLoanDelegate() {
+    }
 
     @Override
     public void execute(DelegateExecution execution) {

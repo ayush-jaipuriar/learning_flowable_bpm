@@ -12,7 +12,7 @@
         <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="checkCreditScore" />
 
         <serviceTask id="checkCreditScore" name="Check Credit Score" 
-                     flowable:class="com.example.loanapplication.delegate.CheckCreditScoreDelegate">
+                     flowable:delegateExpression="${checkCreditScoreDelegate}">
             <documentation>Check applicant's credit score</documentation>
         </serviceTask>
 
@@ -60,14 +60,14 @@
         </sequenceFlow>
 
         <serviceTask id="disburseLoan" name="Disburse Loan"
-                     flowable:class="com.example.loanapplication.delegate.DisburseLoanDelegate">
+                     flowable:delegateExpression="${disburseLoanDelegate}">
             <documentation>Disburse the approved loan amount</documentation>
         </serviceTask>
 
         <sequenceFlow id="flow10" sourceRef="disburseLoan" targetRef="endEventApproved" />
 
         <serviceTask id="rejectApplication" name="Reject Application"
-                     flowable:class="com.example.loanapplication.delegate.RejectLoanApplicationDelegate">
+                     flowable:delegateExpression="${rejectLoanApplicationDelegate}">
             <documentation>Reject the loan application</documentation>
         </serviceTask>
 

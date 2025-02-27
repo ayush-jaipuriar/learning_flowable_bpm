@@ -41,6 +41,9 @@ dependencies {
     implementation "org.flowable:flowable-form-engine:${flowableVersion}"
     implementation "org.flowable:flowable-form-spring:${flowableVersion}"
     implementation "org.flowable:flowable-form-rest:${flowableVersion}"
+    // Removing UI dependencies for now
+    // implementation 'org.flowable:flowable-spring-boot-starter-ui-task:6.7.2'
+    // implementation 'org.flowable:flowable-spring-boot-starter-ui-admin:6.7.2'
     
     // Drools for DMN support
     implementation "org.drools:drools-core:${droolsVersion}"
