@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             id="loanEligibilityDef" 
+             name="Loan Eligibility Decision" 
+             namespace="http://flowable.org/dmn">
+             
+  <decision id="loanEligibility" name="Loan Eligibility">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="Credit Score">
+        <inputExpression id="inputExpression1" typeRef="number">
+          <text>creditScore</text>
+        </inputExpression>
+      </input>
+      <input id="input2" label="Monthly Income">
+        <inputExpression id="inputExpression2" typeRef="number">
+          <text>monthlyIncome</text>
+        </inputExpression>
+      </input>
+      <input id="input3" label="Existing Debt">
+        <inputExpression id="inputExpression3" typeRef="number">
+          <text>existingDebt</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Eligible" name="eligible" typeRef="boolean" />
+      <output id="output2" label="Reason" name="reason" typeRef="string" />
+      
+      <!-- Rules -->
+      <rule id="rule1">
+        <inputEntry id="inputEntry1">
+          <text>&lt; 550</text>
+        </inputEntry>
+        <inputEntry id="inputEntry2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry1">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="outputEntry2">
+          <text>"Credit score too low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule2">
+        <inputEntry id="inputEntry4">
+          <text>&gt;= 550</text>
+        </inputEntry>
+        <inputEntry id="inputEntry5">
+          <text>&lt; 2000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry3">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="outputEntry4">
+          <text>"Income too low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule3">
+        <inputEntry id="inputEntry7">
+          <text>&gt;= 550</text>
+        </inputEntry>
+        <inputEntry id="inputEntry8">
+          <text>&gt;= 2000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry9">
+          <text>&gt; monthlyIncome * 0.5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry5">
+          <text>false</text>
+        </outputEntry>
+        <outputEntry id="outputEntry6">
+          <text>"Debt-to-income ratio too high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule4">
+        <inputEntry id="inputEntry10">
+          <text>&gt;= 550</text>
+        </inputEntry>
+        <inputEntry id="inputEntry11">
+          <text>&gt;= 2000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry12">
+          <text>&lt;= monthlyIncome * 0.5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry7">
+          <text>true</text>
+        </outputEntry>
+        <outputEntry id="outputEntry8">
+          <text>"Applicant meets eligibility criteria"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

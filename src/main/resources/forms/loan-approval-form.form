@@ -1,0 +1,78 @@
+{
+  "key": "loanApprovalForm",
+  "name": "Loan Approval Form",
+  "fields": [
+    {
+      "id": "applicantName",
+      "name": "Applicant Name",
+      "type": "text",
+      "readOnly": true
+    },
+    {
+      "id": "loanAmount",
+      "name": "Loan Amount ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "loanTermMonths",
+      "name": "Loan Term (Months)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "loanPurpose",
+      "name": "Loan Purpose",
+      "type": "text",
+      "readOnly": true
+    },
+    {
+      "id": "creditScore",
+      "name": "Credit Score",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "monthlyIncome",
+      "name": "Monthly Income ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "existingDebt",
+      "name": "Existing Monthly Debt ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "interestRate",
+      "name": "Calculated Interest Rate (%)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "riskLevel",
+      "name": "Risk Level",
+      "type": "text",
+      "readOnly": true
+    },
+    {
+      "id": "approved",
+      "name": "Approve Loan?",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "comments",
+      "name": "Comments",
+      "type": "multi-line-text",
+      "placeholder": "Enter any comments or notes"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "submit",
+      "name": "Submit Decision"
+    }
+  ]
+}

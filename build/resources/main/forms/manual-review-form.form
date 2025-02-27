@@ -1,0 +1,87 @@
+{
+  "key": "manualReviewForm",
+  "name": "Manual Review Form",
+  "fields": [
+    {
+      "id": "applicantName",
+      "name": "Applicant Name",
+      "type": "text",
+      "readOnly": true
+    },
+    {
+      "id": "loanAmount",
+      "name": "Loan Amount ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "creditScore",
+      "name": "Credit Score",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "monthlyIncome",
+      "name": "Monthly Income ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "existingDebt",
+      "name": "Existing Monthly Debt ($)",
+      "type": "number",
+      "readOnly": true
+    },
+    {
+      "id": "reviewReason",
+      "name": "Reason for Manual Review",
+      "type": "text",
+      "readOnly": true
+    },
+    {
+      "id": "additionalDocumentsRequired",
+      "name": "Additional Documents Required",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "documentsDescription",
+      "name": "Documents Description",
+      "type": "multi-line-text",
+      "placeholder": "Describe the additional documents required"
+    },
+    {
+      "id": "overrideEligibility",
+      "name": "Override Eligibility Decision",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "id": "overrideReason",
+      "name": "Override Reason",
+      "type": "multi-line-text",
+      "placeholder": "Provide reason for overriding eligibility decision"
+    },
+    {
+      "id": "reviewerComments",
+      "name": "Reviewer Comments",
+      "type": "multi-line-text",
+      "required": true,
+      "placeholder": "Enter your review comments"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "approve",
+      "name": "Approve Application"
+    },
+    {
+      "id": "reject",
+      "name": "Reject Application"
+    },
+    {
+      "id": "needMoreInfo",
+      "name": "Request More Information"
+    }
+  ]
+}

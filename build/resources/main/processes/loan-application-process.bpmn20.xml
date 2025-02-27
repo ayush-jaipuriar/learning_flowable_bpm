@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://flowable.org/examples">
+
+    <process id="loanApplicationProcess" name="Loan Application Process" isExecutable="true">
+        <startEvent id="startEvent" name="Loan Application Submitted" flowable:formKey="loanApplicationForm">
+            <documentation>Start of loan application process</documentation>
+        </startEvent>
+
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="checkCreditScore" />
+
+        <serviceTask id="checkCreditScore" name="Check Credit Score" 
+                     flowable:class="com.example.loanapplication.delegate.CheckCreditScoreDelegate">
+            <documentation>Check applicant's credit score</documentation>
+        </serviceTask>
+
+        <sequenceFlow id="flow2" sourceRef="checkCreditScore" targetRef="evaluateLoanEligibility" />
+
+        <businessRuleTask id="evaluateLoanEligibility" name="Evaluate Loan Eligibility"
+                         flowable:decisionTableReferenceKey="loanEligibility">
+            <documentation>Determine if applicant is eligible for loan based on credit score and income</documentation>
+        </businessRuleTask>
+
+        <sequenceFlow id="flow3" sourceRef="evaluateLoanEligibility" targetRef="eligibilityGateway" />
+
+        <exclusiveGateway id="eligibilityGateway" name="Is Eligible?" />
+
+        <sequenceFlow id="flow4" sourceRef="eligibilityGateway" targetRef="calculateInterestRate">
+            <conditionExpression xsi:type="tFormalExpression">${eligible == true}</conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow5" sourceRef="eligibilityGateway" targetRef="rejectApplication">
+            <conditionExpression xsi:type="tFormalExpression">${eligible == false}</conditionExpression>
+        </sequenceFlow>
+
+        <businessRuleTask id="calculateInterestRate" name="Calculate Interest Rate"
+                         flowable:decisionTableReferenceKey="loanInterestRate">
+            <documentation>Calculate interest rate based on loan amount and risk profile</documentation>
+        </businessRuleTask>
+
+        <sequenceFlow id="flow6" sourceRef="calculateInterestRate" targetRef="manualApproval" />
+
+        <userTask id="manualApproval" name="Manual Approval" flowable:formKey="loanApprovalForm"
+                 flowable:candidateGroups="loan-officers">
+            <documentation>Loan officer reviews and approves the loan application</documentation>
+        </userTask>
+
+        <sequenceFlow id="flow7" sourceRef="manualApproval" targetRef="approvalGateway" />
+
+        <exclusiveGateway id="approvalGateway" name="Approved?" />
+
+        <sequenceFlow id="flow8" sourceRef="approvalGateway" targetRef="disburseLoan">
+            <conditionExpression xsi:type="tFormalExpression">${approved == true}</conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow9" sourceRef="approvalGateway" targetRef="rejectApplication">
+            <conditionExpression xsi:type="tFormalExpression">${approved == false}</conditionExpression>
+        </sequenceFlow>
+
+        <serviceTask id="disburseLoan" name="Disburse Loan"
+                     flowable:class="com.example.loanapplication.delegate.DisburseLoanDelegate">
+            <documentation>Disburse the approved loan amount</documentation>
+        </serviceTask>
+
+        <sequenceFlow id="flow10" sourceRef="disburseLoan" targetRef="endEventApproved" />
+
+        <serviceTask id="rejectApplication" name="Reject Application"
+                     flowable:class="com.example.loanapplication.delegate.RejectLoanApplicationDelegate">
+            <documentation>Reject the loan application</documentation>
+        </serviceTask>
+
+        <sequenceFlow id="flow11" sourceRef="rejectApplication" targetRef="endEventRejected" />
+
+        <endEvent id="endEventApproved" name="Loan Approved and Disbursed" />
+        <endEvent id="endEventRejected" name="Loan Application Rejected" />
+    </process>
+</definitions>

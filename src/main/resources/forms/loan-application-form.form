@@ -1,0 +1,85 @@
+{
+  "key": "loanApplicationForm",
+  "name": "Loan Application Form",
+  "fields": [
+    {
+      "id": "applicantName",
+      "name": "Full Name",
+      "type": "text",
+      "required": true,
+      "placeholder": "Enter your full name"
+    },
+    {
+      "id": "email",
+      "name": "Email Address",
+      "type": "text",
+      "required": true,
+      "placeholder": "Enter your email address"
+    },
+    {
+      "id": "phoneNumber",
+      "name": "Phone Number",
+      "type": "text",
+      "required": true,
+      "placeholder": "Enter your phone number"
+    },
+    {
+      "id": "dateOfBirth",
+      "name": "Date of Birth",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "address",
+      "name": "Address",
+      "type": "multi-line-text",
+      "required": true,
+      "placeholder": "Enter your full address"
+    },
+    {
+      "id": "loanAmount",
+      "name": "Loan Amount ($)",
+      "type": "number",
+      "required": true,
+      "placeholder": "Enter the loan amount"
+    },
+    {
+      "id": "loanTermMonths",
+      "name": "Loan Term (Months)",
+      "type": "number",
+      "required": true,
+      "placeholder": "Enter the loan term in months"
+    },
+    {
+      "id": "loanPurpose",
+      "name": "Loan Purpose",
+      "type": "text",
+      "required": true,
+      "placeholder": "e.g., Home Purchase, Vehicle, Education, Business"
+    },
+    {
+      "id": "monthlyIncome",
+      "name": "Monthly Income ($)",
+      "type": "number",
+      "required": true,
+      "placeholder": "Enter your monthly income"
+    },
+    {
+      "id": "existingDebt",
+      "name": "Existing Monthly Debt Payments ($)",
+      "type": "number",
+      "required": true,
+      "placeholder": "Enter your existing monthly debt payments"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "submit",
+      "name": "Submit Application"
+    },
+    {
+      "id": "save",
+      "name": "Save as Draft"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -20,6 +20,7 @@ repositories {
 
 ext {
     flowableVersion = '6.8.0'
+    droolsVersion = '7.73.0.Final'
 }
 
 dependencies {
@@ -41,12 +42,17 @@ dependencies {
     implementation "org.flowable:flowable-form-spring:${flowableVersion}"
     implementation "org.flowable:flowable-form-rest:${flowableVersion}"
     
+    // Drools for DMN support
+    implementation "org.drools:drools-core:${droolsVersion}"
+    implementation "org.drools:drools-compiler:${droolsVersion}"
+    implementation "org.kie:kie-api:${droolsVersion}"
+    
     // Database
     runtimeOnly 'com.h2database:h2'
     
     // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
     
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

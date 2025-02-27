@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="loanInterestRateDef" 
+             name="Loan Interest Rate Decision" 
+             namespace="http://flowable.org/dmn">
+             
+  <decision id="loanInterestRate" name="Loan Interest Rate">
+    <decisionTable id="decisionTable" hitPolicy="UNIQUE">
+      <input id="input1" label="Credit Score">
+        <inputExpression id="inputExpression1" typeRef="number">
+          <text>creditScore</text>
+        </inputExpression>
+      </input>
+      <input id="input2" label="Loan Amount">
+        <inputExpression id="inputExpression2" typeRef="number">
+          <text>loanAmount</text>
+        </inputExpression>
+      </input>
+      <input id="input3" label="Loan Term">
+        <inputExpression id="inputExpression3" typeRef="number">
+          <text>loanTermMonths</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Interest Rate" name="interestRate" typeRef="number" />
+      <output id="output2" label="Risk Level" name="riskLevel" typeRef="string" />
+      
+      <!-- Rules for Credit Score 550-649 -->
+      <rule id="rule1">
+        <inputEntry id="inputEntry1">
+          <text>[550..649]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry2">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry3">
+          <text>&lt;= 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry1">
+          <text>12.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry2">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule2">
+        <inputEntry id="inputEntry4">
+          <text>[550..649]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry5">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry6">
+          <text>&gt; 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry3">
+          <text>13.0</text>
+        </outputEntry>
+        <outputEntry id="outputEntry4">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule3">
+        <inputEntry id="inputEntry7">
+          <text>[550..649]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry8">
+          <text>&gt; 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry5">
+          <text>13.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry6">
+          <text>"High"</text>
+        </outputEntry>
+      </rule>
+      
+      <!-- Rules for Credit Score 650-699 -->
+      <rule id="rule4">
+        <inputEntry id="inputEntry10">
+          <text>[650..699]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry11">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry12">
+          <text>&lt;= 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry7">
+          <text>9.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry8">
+          <text>"Medium"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule5">
+        <inputEntry id="inputEntry13">
+          <text>[650..699]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry14">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry15">
+          <text>&gt; 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry9">
+          <text>10.0</text>
+        </outputEntry>
+        <outputEntry id="outputEntry10">
+          <text>"Medium"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule6">
+        <inputEntry id="inputEntry16">
+          <text>[650..699]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry17">
+          <text>&gt; 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry18">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry11">
+          <text>10.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry12">
+          <text>"Medium"</text>
+        </outputEntry>
+      </rule>
+      
+      <!-- Rules for Credit Score 700-749 -->
+      <rule id="rule7">
+        <inputEntry id="inputEntry19">
+          <text>[700..749]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry20">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry21">
+          <text>&lt;= 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry13">
+          <text>7.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry14">
+          <text>"Low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule8">
+        <inputEntry id="inputEntry22">
+          <text>[700..749]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry23">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry24">
+          <text>&gt; 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry15">
+          <text>8.0</text>
+        </outputEntry>
+        <outputEntry id="outputEntry16">
+          <text>"Low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule9">
+        <inputEntry id="inputEntry25">
+          <text>[700..749]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry26">
+          <text>&gt; 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry27">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry17">
+          <text>8.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry18">
+          <text>"Low"</text>
+        </outputEntry>
+      </rule>
+      
+      <!-- Rules for Credit Score 750+ -->
+      <rule id="rule10">
+        <inputEntry id="inputEntry28">
+          <text>&gt;= 750</text>
+        </inputEntry>
+        <inputEntry id="inputEntry29">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry30">
+          <text>&lt;= 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry19">
+          <text>5.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry20">
+          <text>"Very Low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule11">
+        <inputEntry id="inputEntry31">
+          <text>&gt;= 750</text>
+        </inputEntry>
+        <inputEntry id="inputEntry32">
+          <text>&lt;= 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry33">
+          <text>&gt; 24</text>
+        </inputEntry>
+        <outputEntry id="outputEntry21">
+          <text>6.0</text>
+        </outputEntry>
+        <outputEntry id="outputEntry22">
+          <text>"Very Low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule12">
+        <inputEntry id="inputEntry34">
+          <text>&gt;= 750</text>
+        </inputEntry>
+        <inputEntry id="inputEntry35">
+          <text>&gt; 10000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry36">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry23">
+          <text>6.5</text>
+        </outputEntry>
+        <outputEntry id="outputEntry24">
+          <text>"Very Low"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
