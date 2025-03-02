@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" 
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101" 
+             xmlns:flowable="http://flowable.org/dmn"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101 http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              id="loanEligibilityDef" 
              name="Loan Eligibility Decision" 
              namespace="http://flowable.org/dmn">
@@ -28,7 +30,7 @@
       <!-- Rules -->
       <rule id="rule1">
         <inputEntry id="inputEntry1">
-          <text>&lt; 550</text>
+          <text>#{creditScore &lt; 550}</text>
         </inputEntry>
         <inputEntry id="inputEntry2">
           <text>-</text>
@@ -45,10 +47,10 @@
       </rule>
       <rule id="rule2">
         <inputEntry id="inputEntry4">
-          <text>&gt;= 550</text>
+          <text>#{creditScore &gt;= 550}</text>
         </inputEntry>
         <inputEntry id="inputEntry5">
-          <text>&lt; 2000</text>
+          <text>#{monthlyIncome &lt; 2000}</text>
         </inputEntry>
         <inputEntry id="inputEntry6">
           <text>-</text>
@@ -62,13 +64,13 @@
       </rule>
       <rule id="rule3">
         <inputEntry id="inputEntry7">
-          <text>&gt;= 550</text>
+          <text>#{creditScore &gt;= 550}</text>
         </inputEntry>
         <inputEntry id="inputEntry8">
-          <text>&gt;= 2000</text>
+          <text>#{monthlyIncome &gt;= 2000}</text>
         </inputEntry>
         <inputEntry id="inputEntry9">
-          <text>&gt; monthlyIncome * 0.5</text>
+          <text>#{existingDebt &gt; monthlyIncome * 0.5}</text>
         </inputEntry>
         <outputEntry id="outputEntry5">
           <text>false</text>
@@ -79,13 +81,13 @@
       </rule>
       <rule id="rule4">
         <inputEntry id="inputEntry10">
-          <text>&gt;= 550</text>
+          <text>#{creditScore &gt;= 550}</text>
         </inputEntry>
         <inputEntry id="inputEntry11">
-          <text>&gt;= 2000</text>
+          <text>#{monthlyIncome &gt;= 2000}</text>
         </inputEntry>
         <inputEntry id="inputEntry12">
-          <text>&lt;= monthlyIncome * 0.5</text>
+          <text>#{existingDebt &lt;= monthlyIncome * 0.5}</text>
         </inputEntry>
         <outputEntry id="outputEntry7">
           <text>true</text>

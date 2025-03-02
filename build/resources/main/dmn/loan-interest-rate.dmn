@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" 
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101" 
+             xmlns:flowable="http://flowable.org/dmn"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101 http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              id="loanInterestRateDef" 
              name="Loan Interest Rate Decision" 
              namespace="http://flowable.org/dmn">
@@ -28,13 +30,13 @@
       <!-- Rules for Credit Score 550-649 -->
       <rule id="rule1">
         <inputEntry id="inputEntry1">
-          <text>[550..649]</text>
+          <text>#{creditScore &gt;= 550 &amp;&amp; creditScore &lt;= 649}</text>
         </inputEntry>
         <inputEntry id="inputEntry2">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry3">
-          <text>&lt;= 24</text>
+          <text>#{loanTermMonths &lt;= 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry1">
           <text>12.5</text>
@@ -45,13 +47,13 @@
       </rule>
       <rule id="rule2">
         <inputEntry id="inputEntry4">
-          <text>[550..649]</text>
+          <text>#{creditScore &gt;= 550 &amp;&amp; creditScore &lt;= 649}</text>
         </inputEntry>
         <inputEntry id="inputEntry5">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry6">
-          <text>&gt; 24</text>
+          <text>#{loanTermMonths &gt; 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry3">
           <text>13.0</text>
@@ -62,10 +64,10 @@
       </rule>
       <rule id="rule3">
         <inputEntry id="inputEntry7">
-          <text>[550..649]</text>
+          <text>#{creditScore &gt;= 550 &amp;&amp; creditScore &lt;= 649}</text>
         </inputEntry>
         <inputEntry id="inputEntry8">
-          <text>&gt; 10000</text>
+          <text>#{loanAmount &gt; 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry9">
           <text>-</text>
@@ -81,13 +83,13 @@
       <!-- Rules for Credit Score 650-699 -->
       <rule id="rule4">
         <inputEntry id="inputEntry10">
-          <text>[650..699]</text>
+          <text>#{creditScore &gt;= 650 &amp;&amp; creditScore &lt;= 699}</text>
         </inputEntry>
         <inputEntry id="inputEntry11">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry12">
-          <text>&lt;= 24</text>
+          <text>#{loanTermMonths &lt;= 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry7">
           <text>9.5</text>
@@ -98,13 +100,13 @@
       </rule>
       <rule id="rule5">
         <inputEntry id="inputEntry13">
-          <text>[650..699]</text>
+          <text>#{creditScore &gt;= 650 &amp;&amp; creditScore &lt;= 699}</text>
         </inputEntry>
         <inputEntry id="inputEntry14">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry15">
-          <text>&gt; 24</text>
+          <text>#{loanTermMonths &gt; 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry9">
           <text>10.0</text>
@@ -115,10 +117,10 @@
       </rule>
       <rule id="rule6">
         <inputEntry id="inputEntry16">
-          <text>[650..699]</text>
+          <text>#{creditScore &gt;= 650 &amp;&amp; creditScore &lt;= 699}</text>
         </inputEntry>
         <inputEntry id="inputEntry17">
-          <text>&gt; 10000</text>
+          <text>#{loanAmount &gt; 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry18">
           <text>-</text>
@@ -134,13 +136,13 @@
       <!-- Rules for Credit Score 700-749 -->
       <rule id="rule7">
         <inputEntry id="inputEntry19">
-          <text>[700..749]</text>
+          <text>#{creditScore &gt;= 700 &amp;&amp; creditScore &lt;= 749}</text>
         </inputEntry>
         <inputEntry id="inputEntry20">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry21">
-          <text>&lt;= 24</text>
+          <text>#{loanTermMonths &lt;= 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry13">
           <text>7.5</text>
@@ -151,13 +153,13 @@
       </rule>
       <rule id="rule8">
         <inputEntry id="inputEntry22">
-          <text>[700..749]</text>
+          <text>#{creditScore &gt;= 700 &amp;&amp; creditScore &lt;= 749}</text>
         </inputEntry>
         <inputEntry id="inputEntry23">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry24">
-          <text>&gt; 24</text>
+          <text>#{loanTermMonths &gt; 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry15">
           <text>8.0</text>
@@ -168,10 +170,10 @@
       </rule>
       <rule id="rule9">
         <inputEntry id="inputEntry25">
-          <text>[700..749]</text>
+          <text>#{creditScore &gt;= 700 &amp;&amp; creditScore &lt;= 749}</text>
         </inputEntry>
         <inputEntry id="inputEntry26">
-          <text>&gt; 10000</text>
+          <text>#{loanAmount &gt; 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry27">
           <text>-</text>
@@ -187,13 +189,13 @@
       <!-- Rules for Credit Score 750+ -->
       <rule id="rule10">
         <inputEntry id="inputEntry28">
-          <text>&gt;= 750</text>
+          <text>#{creditScore &gt;= 750}</text>
         </inputEntry>
         <inputEntry id="inputEntry29">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry30">
-          <text>&lt;= 24</text>
+          <text>#{loanTermMonths &lt;= 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry19">
           <text>5.5</text>
@@ -204,13 +206,13 @@
       </rule>
       <rule id="rule11">
         <inputEntry id="inputEntry31">
-          <text>&gt;= 750</text>
+          <text>#{creditScore &gt;= 750}</text>
         </inputEntry>
         <inputEntry id="inputEntry32">
-          <text>&lt;= 10000</text>
+          <text>#{loanAmount &lt;= 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry33">
-          <text>&gt; 24</text>
+          <text>#{loanTermMonths &gt; 24}</text>
         </inputEntry>
         <outputEntry id="outputEntry21">
           <text>6.0</text>
@@ -221,10 +223,10 @@
       </rule>
       <rule id="rule12">
         <inputEntry id="inputEntry34">
-          <text>&gt;= 750</text>
+          <text>#{creditScore &gt;= 750}</text>
         </inputEntry>
         <inputEntry id="inputEntry35">
-          <text>&gt; 10000</text>
+          <text>#{loanAmount &gt; 10000}</text>
         </inputEntry>
         <inputEntry id="inputEntry36">
           <text>-</text>

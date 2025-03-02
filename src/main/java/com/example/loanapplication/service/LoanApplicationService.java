@@ -2,13 +2,14 @@ package com.example.loanapplication.service;
 
 import com.example.loanapplication.model.LoanApplication;
 import com.example.loanapplication.repository.LoanApplicationRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.cmmn.api.CmmnRuntimeService;
 import org.flowable.cmmn.api.runtime.CaseInstance;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +18,27 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class LoanApplicationService {
 
-    private final LoanApplicationRepository loanApplicationRepository;
-    private final RuntimeService runtimeService;
-    private final TaskService taskService;
-    private final CmmnRuntimeService cmmnRuntimeService;
+    @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
+    
+    @Autowired
+    private ApplicationContext applicationContext;
+    
+    // Lazy getters for Flowable services to avoid circular dependencies
+    private RuntimeService getRuntimeService() {
+        return applicationContext.getBean(RuntimeService.class);
+    }
+    
+    private TaskService getTaskService() {
+        return applicationContext.getBean(TaskService.class);
+    }
+    
+    private CmmnRuntimeService getCmmnRuntimeService() {
+        return applicationContext.getBean(CmmnRuntimeService.class);
+    }
 
     @Transactional
     public LoanApplication submitLoanApplication(LoanApplication loanApplication) {
@@ -44,7 +58,7 @@ public class LoanApplicationService {
         variables.put("existingDebt", savedApplication.getExistingDebt());
         
         // Start the loan application process
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("loanApplicationProcess", variables);
+        ProcessInstance processInstance = getRuntimeService().startProcessInstanceByKey("loanApplicationProcess", variables);
         
         // Update the loan application with the process instance ID
         savedApplication.setProcessInstanceId(processInstance.getId());
@@ -83,7 +97,7 @@ public class LoanApplicationService {
         variables.put("monthlyIncome", loanApplication.getMonthlyIncome());
         variables.put("existingDebt", loanApplication.getExistingDebt());
         
-        CaseInstance caseInstance = cmmnRuntimeService.createCaseInstanceBuilder()
+        CaseInstance caseInstance = getCmmnRuntimeService().createCaseInstanceBuilder()
                 .caseDefinitionKey("loanExceptionCase")
                 .variables(variables)
                 .start();

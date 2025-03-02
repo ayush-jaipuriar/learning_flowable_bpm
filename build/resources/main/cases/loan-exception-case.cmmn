@@ -2,16 +2,24 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:flowable="http://flowable.org/cmmn"
+             xsi:schemaLocation="http://www.omg.org/spec/CMMN/20151109/MODEL http://www.omg.org/spec/CMMN/20151109/MODEL"
+             id="loanExceptionCaseDefinition"
              targetNamespace="http://flowable.org/cmmn">
 
     <case id="loanExceptionCase" name="Loan Exception Case">
         <casePlanModel id="casePlanModel" name="Loan Exception Handling Plan">
             
-            <!-- Human tasks -->
-            <planItem id="manualReviewPlanItem" definitionRef="manualReviewTask" />
-            
             <!-- Task definitions -->
-            <humanTask id="manualReviewTask" name="Manual Review of Borderline Application" flowable:formKey="manualReviewForm" />
+            <planItem id="documentRequestPlanItem" definitionRef="documentRequestTask" />
+            <planItem id="customerContactPlanItem" definitionRef="customerContactTask" />
+            
+            <humanTask id="documentRequestTask" name="Request Additional Documents" flowable:formKey="documentRequestForm">
+                <documentation>Request additional documents from the applicant</documentation>
+            </humanTask>
+            
+            <humanTask id="customerContactTask" name="Contact Customer" flowable:formKey="customerContactForm">
+                <documentation>Contact the customer for additional information</documentation>
+            </humanTask>
             
         </casePlanModel>
     </case>

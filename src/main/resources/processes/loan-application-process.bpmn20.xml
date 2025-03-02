@@ -2,24 +2,27 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:flowable="http://flowable.org/bpmn"
-             targetNamespace="http://flowable.org/examples">
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
 
     <process id="loanApplicationProcess" name="Loan Application Process" isExecutable="true">
-        <startEvent id="startEvent" name="Loan Application Submitted" flowable:formKey="loanApplicationForm">
-            <documentation>Start of loan application process</documentation>
-        </startEvent>
+        <startEvent id="startEvent" name="Loan Application Received" />
 
         <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="checkCreditScore" />
 
-        <serviceTask id="checkCreditScore" name="Check Credit Score" 
+        <serviceTask id="checkCreditScore" name="Check Credit Score"
                      flowable:delegateExpression="${checkCreditScoreDelegate}">
-            <documentation>Check applicant's credit score</documentation>
+            <documentation>Check applicant's credit score from credit bureau</documentation>
         </serviceTask>
 
         <sequenceFlow id="flow2" sourceRef="checkCreditScore" targetRef="evaluateLoanEligibility" />
 
         <serviceTask id="evaluateLoanEligibility" name="Evaluate Loan Eligibility"
-                     flowable:delegateExpression="${evaluateLoanEligibilityDelegate}">
+                     flowable:delegateExpression="${businessRuleTaskDelegate}">
             <documentation>Determine if applicant is eligible for loan based on credit score and income</documentation>
         </serviceTask>
 
@@ -36,15 +39,44 @@
         </sequenceFlow>
 
         <serviceTask id="calculateInterestRate" name="Calculate Interest Rate"
-                     flowable:delegateExpression="${calculateInterestRateDelegate}">
+                     flowable:delegateExpression="${businessRuleTaskDelegate}">
             <documentation>Calculate interest rate based on loan amount and risk profile</documentation>
         </serviceTask>
 
-        <sequenceFlow id="flow6" sourceRef="calculateInterestRate" targetRef="manualApproval" />
+        <sequenceFlow id="flow6" sourceRef="calculateInterestRate" targetRef="riskAssessmentGateway" />
 
-        <userTask id="manualApproval" name="Manual Approval" flowable:formKey="loanApprovalForm"
-                 flowable:candidateGroups="loan-officers">
-            <documentation>Loan officer reviews and approves the loan application</documentation>
+        <!-- New gateway to handle borderline cases -->
+        <exclusiveGateway id="riskAssessmentGateway" name="Risk Assessment" />
+        
+        <sequenceFlow id="flow6a" sourceRef="riskAssessmentGateway" targetRef="startBorderlineReview">
+            <conditionExpression xsi:type="tFormalExpression">${riskLevel == 'High'}</conditionExpression>
+        </sequenceFlow>
+        
+        <sequenceFlow id="flow6b" sourceRef="riskAssessmentGateway" targetRef="manualApproval">
+            <conditionExpression xsi:type="tFormalExpression">${riskLevel != 'High'}</conditionExpression>
+        </sequenceFlow>
+        
+        <!-- Add task to start CMMN case for borderline applications -->
+        <serviceTask id="startBorderlineReview" name="Start Borderline Review"
+                     flowable:delegateExpression="${startBorderlineReviewDelegate}">
+            <documentation>Start a case for borderline application review</documentation>
+        </serviceTask>
+        
+        <sequenceFlow id="flow6c" sourceRef="startBorderlineReview" targetRef="waitForCaseCompletion" />
+        
+        <!-- Add user task to wait for case completion -->
+        <userTask id="waitForCaseCompletion" name="Wait for Case Review"
+                 flowable:candidateGroups="loan-officers"
+                 flowable:formKey="case-review-form">
+            <documentation>Wait for the completion of the case review</documentation>
+        </userTask>
+        
+        <sequenceFlow id="flow6d" sourceRef="waitForCaseCompletion" targetRef="manualApproval" />
+
+        <userTask id="manualApproval" name="Manual Approval"
+                 flowable:candidateGroups="loan-officers"
+                 flowable:formKey="loan-approval-form">
+            <documentation>Loan officer reviews and approves or rejects the loan application</documentation>
         </userTask>
 
         <sequenceFlow id="flow7" sourceRef="manualApproval" targetRef="approvalGateway" />
@@ -61,19 +93,86 @@
 
         <serviceTask id="disburseLoan" name="Disburse Loan"
                      flowable:delegateExpression="${disburseLoanDelegate}">
-            <documentation>Disburse the approved loan amount</documentation>
+            <documentation>Disburse the approved loan amount to the applicant's account</documentation>
         </serviceTask>
 
         <sequenceFlow id="flow10" sourceRef="disburseLoan" targetRef="endEventApproved" />
 
         <serviceTask id="rejectApplication" name="Reject Application"
-                     flowable:delegateExpression="${rejectLoanApplicationDelegate}">
-            <documentation>Reject the loan application</documentation>
+                     flowable:delegateExpression="${rejectApplicationDelegate}">
+            <documentation>Notify the applicant about the rejection</documentation>
         </serviceTask>
 
         <sequenceFlow id="flow11" sourceRef="rejectApplication" targetRef="endEventRejected" />
 
         <endEvent id="endEventApproved" name="Loan Approved and Disbursed" />
         <endEvent id="endEventRejected" name="Loan Application Rejected" />
+        
+        <!-- Error handling for DMN execution -->
+        <boundaryEvent id="dmnEligibilityErrorEvent" attachedToRef="evaluateLoanEligibility">
+            <errorEventDefinition errorRef="DMN_EXECUTION_ERROR" />
+        </boundaryEvent>
+        
+        <sequenceFlow id="flowEligibilityError" sourceRef="dmnEligibilityErrorEvent" targetRef="handleEligibilityError" />
+        
+        <serviceTask id="handleEligibilityError" name="Handle Eligibility Error" 
+                     flowable:delegateExpression="${dmnFallbackService}">
+            <documentation>Handle DMN eligibility execution errors</documentation>
+        </serviceTask>
+        
+        <sequenceFlow id="flowAfterEligibilityError" sourceRef="handleEligibilityError" targetRef="eligibilityGateway" />
+        
+        <boundaryEvent id="dmnInterestRateErrorEvent" attachedToRef="calculateInterestRate">
+            <errorEventDefinition errorRef="DMN_EXECUTION_ERROR" />
+        </boundaryEvent>
+        
+        <sequenceFlow id="flowInterestRateError" sourceRef="dmnInterestRateErrorEvent" targetRef="handleInterestRateError" />
+        
+        <serviceTask id="handleInterestRateError" name="Handle Interest Rate Error" 
+                     flowable:delegateExpression="${dmnFallbackService}">
+            <documentation>Handle DMN interest rate execution errors</documentation>
+        </serviceTask>
+        
+        <sequenceFlow id="flowAfterInterestRateError" sourceRef="handleInterestRateError" targetRef="riskAssessmentGateway" />
+        
+        <!-- Customer inquiry handling -->
+        <boundaryEvent id="customerInquiryEvent" attachedToRef="manualApproval" cancelActivity="false">
+            <messageEventDefinition messageRef="customerInquiryMessage" />
+        </boundaryEvent>
+        
+        <sequenceFlow id="flowCustomerInquiry" sourceRef="customerInquiryEvent" targetRef="handleCustomerInquiry" />
+        
+        <serviceTask id="handleCustomerInquiry" name="Handle Customer Inquiry" 
+                     flowable:delegateExpression="${startCustomerInquiryDelegate}">
+            <documentation>Start a case for customer inquiry</documentation>
+        </serviceTask>
+        
+        <sequenceFlow id="flowAfterCustomerInquiry" sourceRef="handleCustomerInquiry" targetRef="endEventInquiry" />
+        
+        <endEvent id="endEventInquiry" name="Customer Inquiry Handled" />
+        
+        <!-- Loan modification handling -->
+        <boundaryEvent id="loanModificationEvent" attachedToRef="manualApproval" cancelActivity="false">
+            <messageEventDefinition messageRef="loanModificationMessage" />
+        </boundaryEvent>
+        
+        <sequenceFlow id="flowLoanModification" sourceRef="loanModificationEvent" targetRef="handleLoanModification" />
+        
+        <serviceTask id="handleLoanModification" name="Handle Loan Modification" 
+                     flowable:delegateExpression="${startLoanModificationDelegate}">
+            <documentation>Start a case for loan modification</documentation>
+        </serviceTask>
+        
+        <sequenceFlow id="flowAfterLoanModification" sourceRef="handleLoanModification" targetRef="endEventModification" />
+        
+        <endEvent id="endEventModification" name="Loan Modification Handled" />
     </process>
+    
+    <!-- Message definitions -->
+    <message id="customerInquiryMessage" name="customerInquiryMessage" />
+    <message id="loanModificationMessage" name="loanModificationMessage" />
+    
+    <!-- Error definitions -->
+    <error id="DMN_EXECUTION_ERROR" errorCode="DMN_EXECUTION_ERROR" name="DMN Execution Error" />
+
 </definitions>

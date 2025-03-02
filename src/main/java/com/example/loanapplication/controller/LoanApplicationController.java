@@ -2,20 +2,32 @@ package com.example.loanapplication.controller;
 
 import com.example.loanapplication.model.LoanApplication;
 import com.example.loanapplication.service.LoanApplicationService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.flowable.engine.RuntimeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/loan-applications")
-@RequiredArgsConstructor
 @Slf4j
 public class LoanApplicationController {
 
-    private final LoanApplicationService loanApplicationService;
+    @Autowired
+    private LoanApplicationService loanApplicationService;
+    
+    @Autowired
+    private ApplicationContext applicationContext;
+    
+    // Lazy getter for RuntimeService to avoid circular dependencies
+    private RuntimeService getRuntimeService() {
+        return applicationContext.getBean(RuntimeService.class);
+    }
 
     @PostMapping
     public ResponseEntity<LoanApplication> submitLoanApplication(@RequestBody LoanApplication loanApplication) {
@@ -48,14 +60,38 @@ public class LoanApplicationController {
     @PostMapping("/{id}/customer-inquiry")
     public ResponseEntity<Void> startCustomerInquiry(@PathVariable Long id) {
         log.info("Starting customer inquiry for loan application ID: {}", id);
-        loanApplicationService.handleCustomerInquiry(id);
-        return ResponseEntity.ok().build();
+        LoanApplication loanApplication = loanApplicationService.getLoanApplication(id);
+        
+        if (loanApplication.getProcessInstanceId() != null) {
+            // Send a message to the running process instance
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("loanApplicationId", id);
+            getRuntimeService().messageEventReceived("customerInquiryMessage", loanApplication.getProcessInstanceId(), variables);
+            log.info("Sent customer inquiry message to process instance: {}", loanApplication.getProcessInstanceId());
+            return ResponseEntity.ok().build();
+        } else {
+            // Fall back to direct case creation if no process instance exists
+            loanApplicationService.handleCustomerInquiry(id);
+            return ResponseEntity.ok().build();
+        }
     }
     
     @PostMapping("/{id}/loan-modification")
     public ResponseEntity<Void> startLoanModification(@PathVariable Long id) {
         log.info("Starting loan modification for loan application ID: {}", id);
-        loanApplicationService.handleLoanModification(id);
-        return ResponseEntity.ok().build();
+        LoanApplication loanApplication = loanApplicationService.getLoanApplication(id);
+        
+        if (loanApplication.getProcessInstanceId() != null) {
+            // Send a message to the running process instance
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("loanApplicationId", id);
+            getRuntimeService().messageEventReceived("loanModificationMessage", loanApplication.getProcessInstanceId(), variables);
+            log.info("Sent loan modification message to process instance: {}", loanApplication.getProcessInstanceId());
+            return ResponseEntity.ok().build();
+        } else {
+            // Fall back to direct case creation if no process instance exists
+            loanApplicationService.handleLoanModification(id);
+            return ResponseEntity.ok().build();
+        }
     }
 }
