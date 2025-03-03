@@ -50,13 +50,20 @@ public class CheckCreditScoreDelegate implements JavaDelegate {
             throw new RuntimeException("Loan application not found for process instance ID: " + processInstanceId);
         }
         
-        // In a real-world scenario, this would call a credit bureau API
-        // For this example, we'll simulate a credit score check
-        int creditScore = simulateCreditScoreCheck(loanApplication);
-        loanApplication.setCreditScore(creditScore);
-        
-        // Save the updated loan application
-        loanApplicationRepository.save(loanApplication);
+        int creditScore;
+        // Check if credit score is already provided
+        if (loanApplication.getCreditScore() != null && loanApplication.getCreditScore() > 0) {
+            log.info("Using provided credit score: {} for applicant: {}", 
+                    loanApplication.getCreditScore(), loanApplication.getApplicantName());
+            creditScore = loanApplication.getCreditScore();
+        } else {
+            // Calculate credit score if not provided
+            log.info("Calculating credit score for applicant: {}", loanApplication.getApplicantName());
+            creditScore = simulateCreditScoreCheck(loanApplication);
+            loanApplication.setCreditScore(creditScore);
+            // Save the updated loan application
+            loanApplicationRepository.save(loanApplication);
+        }
         
         // Set variables for the process
         execution.setVariable("creditScore", creditScore);
